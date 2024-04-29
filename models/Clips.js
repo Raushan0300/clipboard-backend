@@ -6,6 +6,9 @@ const clipSchema = new mongoose.Schema({
     },
     code:{
         type:String,
+    },
+    file:{
+        type:String,
     }
 });
 
