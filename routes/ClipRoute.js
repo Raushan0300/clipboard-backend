@@ -84,13 +84,8 @@ router.get('/show', async (req,res)=>{
         if(clips.text){
             res.status(200).json({text:clips.text});
         } else{
-            const ext = clips.file.filename.split('.').pop();
-      const contentType = mimeTypes[`.${ext}`] || 'application/octet-stream';
-      res.setHeader('Content-Disposition', `attachment; filename="${clips.file.filename}"`);
-      res.setHeader('Content-Type', contentType);
-      res.send(clips.file.data);
+            res.status(200).json({fileId:clips.file});
         }
-        // res.status(200).json({text:clips.text});
     } else{
         res.status(200).json({text:'NOT FOUND'});
     };
