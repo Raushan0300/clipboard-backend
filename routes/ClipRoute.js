@@ -72,7 +72,7 @@ function bufferToStream(buffer){
 };
 
 function currentDateTime(){
-    return moment().format('YYYY-MM-DD HH:mm:ss');
+    return moment().tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss');
 };
   
 
