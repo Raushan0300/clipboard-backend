@@ -4,17 +4,9 @@ const multer = require('multer');
 const {google} = require('googleapis');
 const mime = require('mime-types');
 const stream = require('stream');
-const moment = require('moment');
+const moment = require('moment-timezone');
 
 const apikey = require('../apikey.json');
-
-const mimeTypes = {
-    '.aac': 'audio/aac',
-    '.abw': 'application/x-abiword',
-    '.arc': 'application/x-freearc',
-    '.avi': 'video/x-msvideo',
-    '.azw': 'application/vnd.amazon.ebook',
-  };
 
 const SCOPE = ['https://www.googleapis.com/auth/drive'];
 
