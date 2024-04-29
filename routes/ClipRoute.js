@@ -4,6 +4,7 @@ const multer = require('multer');
 const {google} = require('googleapis');
 const mime = require('mime-types');
 const stream = require('stream');
+const moment = require('moment');
 
 const apikey = require('../apikey.json');
 
@@ -69,6 +70,10 @@ function bufferToStream(buffer){
     // readable.push(null);
     // return readable;
 };
+
+function currentDateTime(){
+    return moment().format('YYYY-MM-DD HH:mm:ss');
+};
   
 
 const Clips = require('../models/Clips');
@@ -82,11 +87,14 @@ router.get('/show', async (req,res)=>{
     const clips = await Clips.findOne({code});
     if(clips){
         if(clips.text){
+            console.log('showing text: ', currentDateTime());
             res.status(200).json({text:clips.text});
         } else{
+            console.log('showing file: ', currentDateTime());
             res.status(200).json({fileId:clips.file});
         }
     } else{
+        console.log('NOT FOUND: ', currentDateTime());
         res.status(200).json({text:'NOT FOUND'});
     };
 });
@@ -104,6 +112,8 @@ router.post('/save', async (req,res)=>{
 
     const newClip = new Clips({text, code});
     await newClip.save();
+
+    console.log('Saved Text: ', currentDateTime());
 
     res.status(200).json({message:'Saved', code:code});
     
@@ -134,6 +144,8 @@ router.post('/upload', upload.single('file'), async (req, res) => {
       });
   
       await newClip.save();
+
+      console.log('Saved File: ', currentDateTime());
   
       res.status(200).json({ message: 'Saved', code: code });
     } catch (error) {
