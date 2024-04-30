@@ -9,6 +9,7 @@ app.use(cors());
 const PORT = process.env.PORT || 8000;
 
 app.get('/',(req,res)=>{
+    console.log('Ping')
     res.send('Hello World');
 })
 
