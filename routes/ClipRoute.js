@@ -5,6 +5,7 @@ const {google} = require('googleapis');
 const mime = require('mime-types');
 const stream = require('stream');
 const moment = require('moment-timezone');
+const schedule = require('node-schedule');
 
 const apikey = require('../apikey.json');
 
@@ -66,6 +67,25 @@ function bufferToStream(buffer){
 function currentDateTime(){
     return moment().tz('Asia/Kolkata').format('YYYY-MM-DD HH:mm:ss');
 };
+
+async function deleteFile(authClient, fileId){
+    const drive = google.drive({version: 'v3', auth: authClient});
+    await drive.files.delete({fileId: fileId});
+    // return new Promise((resolve,reject)=>{
+    //     const drive = google.drive({version:'v3',auth:authClient});
+
+    //     drive.files.delete({
+    //         fileId: fileId
+    //     }, function(err){
+    //         if(err){
+    //             console.error('Error deleting file:', err);
+    //             reject(err);
+    //         } else{
+    //             resolve();
+    //         }
+    //     });
+    // });
+};
   
 
 const Clips = require('../models/Clips');
@@ -107,6 +127,12 @@ router.post('/save', async (req,res)=>{
 
     console.log('Saved Text: ', currentDateTime());
 
+    schedule.scheduleJob(moment().add(24, 'hours').toDate(), async () => {
+        await Clips.deleteOne({code});
+
+        console.log('Deleted File: ', currentDateTime());
+      });
+
     res.status(200).json({message:'Saved', code:code});
     
 });
@@ -138,6 +164,14 @@ router.post('/upload', upload.single('file'), async (req, res) => {
       await newClip.save();
 
       console.log('Saved File: ', currentDateTime());
+
+      schedule.scheduleJob(moment().add(24, 'hours').toDate(), async () => {
+        const auth = await authorize();
+        await deleteFile(auth, fileId);
+        await Clips.deleteOne({file: fileId});
+
+        console.log('Deleted File: ', currentDateTime());
+      });
   
       res.status(200).json({ message: 'Saved', code: code });
     } catch (error) {
