@@ -30,7 +30,7 @@ async function uploadFile(authClient, name, mimeType, buffer) {
 
     var fileMetadata = {
       name: `${Date.now()}-${name}`,
-      parents: [`${process.env.DRIVE_ID}`],
+      parents: [`${process.env.DRIVE_ID || '1kBvZ5qNhrW8BJ7rQ67pM3XV-16fD67Wl'}`],
     };
 
     var media = {
